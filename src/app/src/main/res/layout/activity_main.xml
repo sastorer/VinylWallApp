@@ -26,6 +26,8 @@
         android:layout_marginTop="189dp"
         android:layout_marginEnd="258dp"
         android:adjustViewBounds="true"
+        android:clickable="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,6 +42,7 @@
         android:layout_marginTop="189dp"
         android:layout_marginEnd="178dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -54,6 +57,7 @@
         android:layout_marginTop="189dp"
         android:layout_marginEnd="99dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -68,6 +72,7 @@
         android:layout_marginTop="275dp"
         android:layout_marginEnd="258dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -82,6 +87,7 @@
         android:layout_marginTop="275dp"
         android:layout_marginEnd="178dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -96,6 +102,7 @@
         android:layout_marginTop="275dp"
         android:layout_marginEnd="99dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -110,6 +117,7 @@
         android:layout_marginTop="359dp"
         android:layout_marginEnd="258dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -124,6 +132,7 @@
         android:layout_marginTop="359dp"
         android:layout_marginEnd="177dp"
         android:adjustViewBounds="true"
+        android:longClickable="true"
         android:scaleType="fitCenter"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="parent"
@@ -189,5 +198,109 @@
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="@+id/imageView_background"
         app:layout_constraintTop_toBottomOf="@+id/image_grid8" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid1"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="178dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid1"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid2"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="178dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid2"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid3"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="178dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid3"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid4"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="264dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid4"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid5"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="264dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid5"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid6"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="264dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid6"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid7"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="348dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid7"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid8"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="348dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintStart_toStartOf="@+id/image_grid8"
+        app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
