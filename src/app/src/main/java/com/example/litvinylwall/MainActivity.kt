@@ -1,37 +1,60 @@
 package com.example.litvinylwall
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.spotify.android.appremote.api.ConnectionParams
+import com.spotify.android.appremote.api.Connector
+import com.spotify.android.appremote.api.SpotifyAppRemote
+import com.squareup.picasso.Picasso
 
-var albumCount = -1
 
 class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
+    lateinit var img1 : ImageView
+    lateinit var img2 : ImageView
+    lateinit var img3 : ImageView
+    lateinit var img4 : ImageView
+    lateinit var img5 : ImageView
+    lateinit var img6 : ImageView
+    lateinit var img7 : ImageView
+    lateinit var img8 : ImageView
+
+    val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL", "spotify:album:4oktVvRuO1In9B7Hz0xm0a")
+
+    private val clientId = "4adfa19aee5a48e4a7634908838c3292"
+    private val redirectUri = "lit-vinyl-wall://callback"
+    private var spotifyAppRemote: SpotifyAppRemote? = null
+
+    var albumCount = -1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val img1 = findViewById<ImageView>(R.id.image_grid1)
+        img1 = findViewById<ImageView>(R.id.image_grid1)
         img1.tag = R.drawable.blankalbum
-        val img2 = findViewById<ImageView>(R.id.image_grid2)
+        img2 = findViewById<ImageView>(R.id.image_grid2)
         img2.tag = R.drawable.blankalbum
-        val img3 = findViewById<ImageView>(R.id.image_grid3)
+        img3 = findViewById<ImageView>(R.id.image_grid3)
         img3.tag = R.drawable.blankalbum
-        val img4 = findViewById<ImageView>(R.id.image_grid4)
+        img4 = findViewById<ImageView>(R.id.image_grid4)
         img4.tag = R.drawable.blankalbum
-        val img5 = findViewById<ImageView>(R.id.image_grid5)
+        img5 = findViewById<ImageView>(R.id.image_grid5)
         img5.tag = R.drawable.blankalbum
-        val img6 = findViewById<ImageView>(R.id.image_grid6)
+        img6 = findViewById<ImageView>(R.id.image_grid6)
         img6.tag = R.drawable.blankalbum
-        val img7 = findViewById<ImageView>(R.id.image_grid7)
+        img7 = findViewById<ImageView>(R.id.image_grid7)
         img7.tag = R.drawable.blankalbum
-        val img8 = findViewById<ImageView>(R.id.image_grid8)
+        img8 = findViewById<ImageView>(R.id.image_grid8)
         img8.tag = R.drawable.blankalbum
+
         val images = arrayOf(img1, img2, img3, img4, img5, img6, img7, img8)
 
         val actionButton1 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid1)
@@ -49,8 +72,9 @@ class MainActivity : AppCompatActivity() {
             albumCount++
 
             if (albumCount < 8) {
-                images[albumCount].setImageDrawable(resources.getDrawable(R.drawable.anawesomewave))
+                Picasso.with(this).load("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8").into(images[albumCount])
                 images[albumCount].tag = R.drawable.anawesomewave
+                images[albumCount].contentDescription = sounds[0]
             }
         }
 
@@ -239,4 +263,48 @@ class MainActivity : AppCompatActivity() {
             albumCount--
         }
     }
+
+    override fun onStart() {
+        super.onStart()
+        // Set the connection parameters
+        val connectionParams = ConnectionParams.Builder(clientId)
+            .setRedirectUri(redirectUri)
+            .showAuthView(true)
+            .build()
+
+        SpotifyAppRemote.connect(this, connectionParams, object : Connector.ConnectionListener {
+            override fun onConnected(appRemote: SpotifyAppRemote) {
+                spotifyAppRemote = appRemote
+                Log.d("MainActivity", "Connected! Yay!")
+                // Now you can start interacting with App Remote
+                connected()
+            }
+
+            override fun onFailure(throwable: Throwable) {
+                Log.e("MainActivity", throwable.message, throwable)
+                // Something went wrong when attempting to connect! Handle errors here
+            }
+        })
+    }
+
+    private fun connected() {
+        // Then we will write some more code here.
+        Log.i("MainActivity", "In the connected method")
+        spotifyAppRemote?.let { spotify ->
+            img1.setOnClickListener {
+                spotify.playerApi.play(sounds[0].toString())
+            }
+            img2.setOnClickListener {
+                spotify.playerApi.play(sounds[1].toString())
+            }
+        }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        spotifyAppRemote?.let {
+            SpotifyAppRemote.disconnect(it)
+        }
+    }
+
 }
