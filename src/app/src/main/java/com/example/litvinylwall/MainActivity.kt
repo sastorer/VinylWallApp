@@ -1,8 +1,6 @@
 package com.example.litvinylwall
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -27,6 +25,16 @@ class MainActivity : AppCompatActivity() {
     lateinit var img8 : ImageView
 
     val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL", "spotify:album:4oktVvRuO1In9B7Hz0xm0a")
+    val albumArt = arrayOf("https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png",
+        "https://i.imgur.com/V4QpirM.png"
+    )
+    val nfcAlbumArt = arrayOf("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8")
 
     private val clientId = "4adfa19aee5a48e4a7634908838c3292"
     private val redirectUri = "lit-vinyl-wall://callback"
@@ -39,21 +47,29 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         img1 = findViewById<ImageView>(R.id.image_grid1)
-        img1.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[0]).into(img1)
+        img1.tag = "Blank"
         img2 = findViewById<ImageView>(R.id.image_grid2)
-        img2.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[1]).into(img2)
+        img2.tag = "Blank"
         img3 = findViewById<ImageView>(R.id.image_grid3)
-        img3.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[2]).into(img3)
+        img3.tag = "Blank"
         img4 = findViewById<ImageView>(R.id.image_grid4)
-        img4.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[3]).into(img4)
+        img4.tag = "Blank"
         img5 = findViewById<ImageView>(R.id.image_grid5)
-        img5.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[4]).into(img5)
+        img5.tag = "Blank"
         img6 = findViewById<ImageView>(R.id.image_grid6)
-        img6.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[5]).into(img6)
+        img6.tag = "Blank"
         img7 = findViewById<ImageView>(R.id.image_grid7)
-        img7.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[6]).into(img7)
+        img7.tag = "Blank"
         img8 = findViewById<ImageView>(R.id.image_grid8)
-        img8.tag = R.drawable.blankalbum
+        Picasso.with(this).load(albumArt[7]).into(img8)
+        img8.tag = "Blank"
 
         val images = arrayOf(img1, img2, img3, img4, img5, img6, img7, img8)
 
@@ -72,71 +88,63 @@ class MainActivity : AppCompatActivity() {
             albumCount++
 
             if (albumCount < 8) {
-                Picasso.with(this).load("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8").into(images[albumCount])
-                images[albumCount].tag = R.drawable.anawesomewave
+                Picasso.with(this).load(nfcAlbumArt[0]).into(images[albumCount])
+                images[albumCount].tag = "NotBlank"
                 images[albumCount].contentDescription = sounds[0]
             }
         }
 
         img1.setOnLongClickListener {
-            val resource = img1.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img1.tag == "NotBlank") {
                 actionButton1.visibility = View.VISIBLE
             }
             true
         }
 
         img2.setOnLongClickListener {
-            val resource = img2.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img2.tag == "NotBlank") {
                 actionButton2.visibility = View.VISIBLE
             }
             true
         }
 
         img3.setOnLongClickListener {
-            val resource = img3.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img3.tag == "NotBlank") {
                 actionButton3.visibility = View.VISIBLE
             }
             true
         }
 
         img4.setOnLongClickListener {
-            val resource = img4.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img4.tag == "NotBlank") {
                 actionButton4.visibility = View.VISIBLE
             }
             true
         }
 
         img5.setOnLongClickListener {
-            val resource = img5.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img5.tag == "NotBlank") {
                 actionButton5.visibility = View.VISIBLE
             }
             true
         }
 
         img6.setOnLongClickListener {
-            val resource = img6.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img6.tag == "NotBlank") {
                 actionButton6.visibility = View.VISIBLE
             }
             true
         }
 
         img7.setOnLongClickListener {
-            val resource = img7.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img7.tag == "NotBlank") {
                 actionButton7.visibility = View.VISIBLE
             }
             true
         }
 
         img8.setOnLongClickListener {
-            val resource = img8.tag
-            if (resource != R.drawable.blankalbum) {
+            if (img8.tag == "NotBlank") {
                 actionButton8.visibility = View.VISIBLE
             }
             true
@@ -159,7 +167,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton1.visibility = View.INVISIBLE
             albumCount--
@@ -179,7 +187,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton2.visibility = View.INVISIBLE
             albumCount--
@@ -197,7 +205,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton3.visibility = View.INVISIBLE
             albumCount--
@@ -213,7 +221,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton4.visibility = View.INVISIBLE
             albumCount--
@@ -227,7 +235,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton5.visibility = View.INVISIBLE
             albumCount--
@@ -239,7 +247,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton6.visibility = View.INVISIBLE
             albumCount--
@@ -249,7 +257,7 @@ class MainActivity : AppCompatActivity() {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton7.visibility = View.INVISIBLE
             albumCount--
@@ -257,7 +265,7 @@ class MainActivity : AppCompatActivity() {
 
         actionButton8.setOnClickListener {
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = R.drawable.blankalbum
+            img8.tag = "Blank"
 
             actionButton8.visibility = View.INVISIBLE
             albumCount--
@@ -292,16 +300,20 @@ class MainActivity : AppCompatActivity() {
         Log.i("MainActivity", "In the connected method")
         spotifyAppRemote?.let { spotify ->
             img1.setOnClickListener {
-                spotify.playerApi.play(sounds[0].toString())
+                if (img1.tag == "NotBlank") {
+                    spotify.playerApi.play(sounds[0])
+                }
             }
             img2.setOnClickListener {
-                spotify.playerApi.play(sounds[1].toString())
+                if (img2.tag == "NotBlank") {
+                    spotify.playerApi.play(sounds[1])
+                }
             }
         }
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         spotifyAppRemote?.let {
             SpotifyAppRemote.disconnect(it)
         }
