@@ -6,15 +6,22 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import com.example.litvinylwall.data.Info
+import com.example.litvinylwall.data.InfoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.squareup.picasso.Picasso
+import java.util.*
+import kotlin.random.Random.Default.nextInt
 
 
 class MainActivity : AppCompatActivity() {
     @Suppress("DEPRECATION")
+
+    val database: InfoDatabase by lazy { InfoDatabase.getInstance(this) }
+
     lateinit var img1 : ImageView
     lateinit var img2 : ImageView
     lateinit var img3 : ImageView
@@ -24,52 +31,144 @@ class MainActivity : AppCompatActivity() {
     lateinit var img7 : ImageView
     lateinit var img8 : ImageView
 
-    val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL", "spotify:album:4oktVvRuO1In9B7Hz0xm0a")
-    val albumArt = arrayOf("https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png",
-        "https://i.imgur.com/V4QpirM.png"
+    val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL",
+    "spotify:album:4oktVvRuO1In9B7Hz0xm0a",
+    "spotify:album:0cnNCK2xpudXjB8pzsrYy9",
+    "spotify:album:4QjGIZZqvNrdkgw4LZKLZK",
+    "spotify:album:1CJDBCPg27ASz4eWE7oeNz",
+    "spotify:album:0Q5XBpCYFgUWiG9DUWyAmJ",
+    "spotify:album:3cQO7jp5S9qLBoIVtbkSM1",
+    "spotify:album:5OZJflQcQCdZLQjtUudCin"
     )
-    val nfcAlbumArt = arrayOf("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8")
+    val blankAlbum = "https://i.imgur.com/V4QpirM.png"
+    val albumArt = arrayOf("", "", "", "", "", "", "", "")
+    val nfcAlbumArt = arrayOf("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8",
+    "https://i.scdn.co/image/ab67616d00001e0211b3df35e2e46d91f585afd9",
+    "https://i.scdn.co/image/ab67616d00001e024849278ce9876ebea7353d66",
+    "https://i.scdn.co/image/ab67616d00001e02377453abefeab743c5633fcc",
+    "https://i.scdn.co/image/ab67616d00001e027f888564b247d806d838761e",
+    "https://i.scdn.co/image/ab67616d00001e0220b467550945fd123e00f0a5",
+    "https://i.scdn.co/image/ab67616d00001e02de03bfc2991fd5bcfde65ba3",
+    "https://i.scdn.co/image/ab67616d00001e0274fefed78db6d6cf4d963fdc"
+    )
 
     private val clientId = "4adfa19aee5a48e4a7634908838c3292"
     private val redirectUri = "lit-vinyl-wall://callback"
     private var spotifyAppRemote: SpotifyAppRemote? = null
 
-    var albumCount = -1
+    var albumCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        if (database.infoDatabaseDao.count() != 0) {
+            albumCount = database.infoDatabaseDao.count()
+            Log.i("MainActivity", albumCount.toString())
+        }
 
         img1 = findViewById<ImageView>(R.id.image_grid1)
-        Picasso.with(this).load(albumArt[0]).into(img1)
-        img1.tag = "Blank"
+        val img1info =  database.infoDatabaseDao.get(0)
+        if (img1info != null && img1info.imgTag != "Blank") {
+            Picasso.with(this).load(img1info.imgURL).into(img1)
+            img1.contentDescription = img1info.soundURI
+            img1.tag = "NotBlank"
+            albumArt[0] = img1info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img1)
+            img1.tag = "Blank"
+            img1.contentDescription = ""
+        }
+
         img2 = findViewById<ImageView>(R.id.image_grid2)
-        Picasso.with(this).load(albumArt[1]).into(img2)
-        img2.tag = "Blank"
+        val img2info =  database.infoDatabaseDao.get(1)
+        if (img2info != null && img2info.imgTag != "Blank") {
+            Picasso.with(this).load(img2info.imgURL).into(img2)
+            img2.contentDescription = img2info.soundURI
+            img2.tag = "NotBlank"
+            albumArt[1] = img2info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img2)
+            img2.tag = "Blank"
+            img2.contentDescription = ""
+        }
+
         img3 = findViewById<ImageView>(R.id.image_grid3)
-        Picasso.with(this).load(albumArt[2]).into(img3)
-        img3.tag = "Blank"
+        val img3info =  database.infoDatabaseDao.get(2)
+        if (img3info != null && img3info.imgTag != "Blank") {
+            Picasso.with(this).load(img3info.imgURL).into(img3)
+            img3.contentDescription = img3info.soundURI
+            img3.tag = "NotBlank"
+            albumArt[2] = img3info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img3)
+            img3.tag = "Blank"
+            img3.contentDescription = ""
+        }
+
         img4 = findViewById<ImageView>(R.id.image_grid4)
-        Picasso.with(this).load(albumArt[3]).into(img4)
-        img4.tag = "Blank"
+        val img4info =  database.infoDatabaseDao.get(3)
+        if (img4info != null && img4info.imgTag != "Blank") {
+            Picasso.with(this).load(img4info.imgURL).into(img4)
+            img4.contentDescription = img4info.soundURI
+            img4.tag = "NotBlank"
+            albumArt[3] = img4info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img4)
+            img4.tag = "Blank"
+            img4.contentDescription = ""
+        }
+
         img5 = findViewById<ImageView>(R.id.image_grid5)
-        Picasso.with(this).load(albumArt[4]).into(img5)
-        img5.tag = "Blank"
+        val img5info =  database.infoDatabaseDao.get(4)
+        if (img5info != null && img5info.imgTag != "Blank") {
+            Picasso.with(this).load(img5info.imgURL).into(img5)
+            img5.contentDescription = img5info.soundURI
+            img5.tag = "NotBlank"
+            albumArt[4] = img5info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img5)
+            img5.tag = "Blank"
+            img5.contentDescription = ""
+        }
+
         img6 = findViewById<ImageView>(R.id.image_grid6)
-        Picasso.with(this).load(albumArt[5]).into(img6)
-        img6.tag = "Blank"
+        val img6info =  database.infoDatabaseDao.get(5)
+        if (img6info != null && img6info.imgTag != "Blank") {
+            Picasso.with(this).load(img6info.imgURL).into(img6)
+            img6.contentDescription = img6info.soundURI
+            img6.tag = "NotBlank"
+            albumArt[5] = img6info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img6)
+            img6.tag = "Blank"
+            img6.contentDescription = ""
+        }
+
         img7 = findViewById<ImageView>(R.id.image_grid7)
-        Picasso.with(this).load(albumArt[6]).into(img7)
-        img7.tag = "Blank"
+        val img7info =  database.infoDatabaseDao.get(6)
+        if (img7info != null && img7info.imgTag != "Blank") {
+            Picasso.with(this).load(img7info.imgURL).into(img7)
+            img7.contentDescription = img7info.soundURI
+            img7.tag = "NotBlank"
+            albumArt[6] = img7info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img7)
+            img7.tag = "Blank"
+            img7.contentDescription = ""
+        }
+
         img8 = findViewById<ImageView>(R.id.image_grid8)
-        Picasso.with(this).load(albumArt[7]).into(img8)
-        img8.tag = "Blank"
+        val img8info =  database.infoDatabaseDao.get(7)
+        if (img8info != null && img8info.imgTag != "Blank") {
+            Picasso.with(this).load(img8info.imgURL).into(img8)
+            img8.contentDescription = img8info.soundURI
+            img8.tag = "NotBlank"
+            albumArt[7] = img8info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img8)
+            img8.tag = "Blank"
+            img8.contentDescription = ""
+        }
 
         val images = arrayOf(img1, img2, img3, img4, img5, img6, img7, img8)
 
@@ -85,13 +184,18 @@ class MainActivity : AppCompatActivity() {
         val buttonAddAlbum = findViewById<Button>(R.id.button_addAlbum)
         buttonAddAlbum.setOnClickListener {
             Log.i("MainActivity", "Clicked the Add button")
-            albumCount++
 
             if (albumCount < 8) {
-                Picasso.with(this).load(nfcAlbumArt[0]).into(images[albumCount])
+                var randVal = nextInt(0,8)
+                Log.i("MainActivity", randVal.toString())
+                images[albumCount].setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
+                Picasso.with(this).load(nfcAlbumArt[randVal]).into(images[albumCount])
                 images[albumCount].tag = "NotBlank"
-                images[albumCount].contentDescription = sounds[0]
+                images[albumCount].contentDescription = sounds[randVal]
+                albumArt[albumCount] = nfcAlbumArt[randVal]
             }
+
+            albumCount++
         }
 
         img1.setOnLongClickListener {
@@ -154,40 +258,70 @@ class MainActivity : AppCompatActivity() {
             Log.i("MainActivity", "Clicked the remove button")
             img1.setImageDrawable(img2.drawable)
             img1.tag = img2.tag
+            img1.contentDescription = img2.contentDescription
+            albumArt[0] = albumArt[1]
             img2.setImageDrawable(img3.drawable)
             img2.tag = img3.tag
+            img2.contentDescription = img3.contentDescription
+            albumArt[1] = albumArt[2]
             img3.setImageDrawable(img4.drawable)
             img3.tag = img4.tag
+            img3.contentDescription = img4.contentDescription
+            albumArt[2] = albumArt[3]
             img4.setImageDrawable(img5.drawable)
             img4.tag = img5.tag
+            img4.contentDescription = img5.contentDescription
+            albumArt[3] = albumArt[4]
             img5.setImageDrawable(img6.drawable)
             img5.tag = img6.tag
+            img5.contentDescription = img6.contentDescription
+            albumArt[4] = albumArt[5]
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton1.visibility = View.INVISIBLE
             albumCount--
+
+
         }
 
         actionButton2.setOnClickListener {
             img2.setImageDrawable(img3.drawable)
             img2.tag = img3.tag
+            img2.contentDescription = img3.contentDescription
+            albumArt[1] = albumArt[2]
             img3.setImageDrawable(img4.drawable)
             img3.tag = img4.tag
+            img3.contentDescription = img4.contentDescription
+            albumArt[2] = albumArt[3]
             img4.setImageDrawable(img5.drawable)
             img4.tag = img5.tag
+            img4.contentDescription = img5.contentDescription
+            albumArt[3] = albumArt[4]
             img5.setImageDrawable(img6.drawable)
             img5.tag = img6.tag
+            img5.contentDescription = img6.contentDescription
+            albumArt[4] = albumArt[5]
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton2.visibility = View.INVISIBLE
             albumCount--
@@ -196,16 +330,27 @@ class MainActivity : AppCompatActivity() {
         actionButton3.setOnClickListener {
             img3.setImageDrawable(img4.drawable)
             img3.tag = img4.tag
+            img3.contentDescription = img4.contentDescription
+            albumArt[2] = albumArt[3]
             img4.setImageDrawable(img5.drawable)
             img4.tag = img5.tag
+            img4.contentDescription = img5.contentDescription
+            albumArt[3] = albumArt[4]
             img5.setImageDrawable(img6.drawable)
             img5.tag = img6.tag
+            img5.contentDescription = img6.contentDescription
+            albumArt[4] = albumArt[5]
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton3.visibility = View.INVISIBLE
             albumCount--
@@ -214,14 +359,23 @@ class MainActivity : AppCompatActivity() {
         actionButton4.setOnClickListener {
             img4.setImageDrawable(img5.drawable)
             img4.tag = img5.tag
+            img4.contentDescription = img5.contentDescription
+            albumArt[3] = albumArt[4]
             img5.setImageDrawable(img6.drawable)
             img5.tag = img6.tag
+            img5.contentDescription = img6.contentDescription
+            albumArt[4] = albumArt[5]
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton4.visibility = View.INVISIBLE
             albumCount--
@@ -230,12 +384,19 @@ class MainActivity : AppCompatActivity() {
         actionButton5.setOnClickListener {
             img5.setImageDrawable(img6.drawable)
             img5.tag = img6.tag
+            img5.contentDescription = img6.contentDescription
+            albumArt[4] = albumArt[5]
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton5.visibility = View.INVISIBLE
             albumCount--
@@ -244,10 +405,15 @@ class MainActivity : AppCompatActivity() {
         actionButton6.setOnClickListener {
             img6.setImageDrawable(img7.drawable)
             img6.tag = img7.tag
+            img6.contentDescription = img7.contentDescription
+            albumArt[5] = albumArt[6]
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton6.visibility = View.INVISIBLE
             albumCount--
@@ -256,8 +422,11 @@ class MainActivity : AppCompatActivity() {
         actionButton7.setOnClickListener {
             img7.setImageDrawable(img8.drawable)
             img7.tag = img8.tag
+            img7.contentDescription = img8.contentDescription
+            albumArt[6] = albumArt[7]
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton7.visibility = View.INVISIBLE
             albumCount--
@@ -266,6 +435,7 @@ class MainActivity : AppCompatActivity() {
         actionButton8.setOnClickListener {
             img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
             img8.tag = "Blank"
+            albumArt[7] = blankAlbum
 
             actionButton8.visibility = View.INVISIBLE
             albumCount--
@@ -301,15 +471,65 @@ class MainActivity : AppCompatActivity() {
         spotifyAppRemote?.let { spotify ->
             img1.setOnClickListener {
                 if (img1.tag == "NotBlank") {
-                    spotify.playerApi.play(sounds[0])
+                    spotify.playerApi.play(img1.contentDescription.toString())
                 }
             }
             img2.setOnClickListener {
                 if (img2.tag == "NotBlank") {
-                    spotify.playerApi.play(sounds[1])
+                    spotify.playerApi.play(img2.contentDescription.toString())
+                }
+            }
+            img3.setOnClickListener {
+                if (img3.tag == "NotBlank") {
+                    spotify.playerApi.play(img3.contentDescription.toString())
+                }
+            }
+            img4.setOnClickListener {
+                if (img4.tag == "NotBlank") {
+                    spotify.playerApi.play(img4.contentDescription.toString())
+                }
+            }
+            img5.setOnClickListener {
+                if (img5.tag == "NotBlank") {
+                    spotify.playerApi.play(img5.contentDescription.toString())
+                }
+            }
+            img6.setOnClickListener {
+                if (img6.tag == "NotBlank") {
+                    spotify.playerApi.play(img6.contentDescription.toString())
+                }
+            }
+            img7.setOnClickListener {
+                if (img7.tag == "NotBlank") {
+                    spotify.playerApi.play(img7.contentDescription.toString())
+                }
+            }
+            img8.setOnClickListener {
+                if (img8.tag == "NotBlank") {
+                    spotify.playerApi.play(img8.contentDescription.toString())
                 }
             }
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        val savedImage1 = Info(0, albumArt[0], img1.contentDescription.toString(), img1.tag.toString())
+        val savedImage2 = Info(1, albumArt[1], img2.contentDescription.toString(), img2.tag.toString())
+        val savedImage3 = Info(2, albumArt[2], img3.contentDescription.toString(), img3.tag.toString())
+        val savedImage4 = Info(3, albumArt[3], img4.contentDescription.toString(), img4.tag.toString())
+        val savedImage5 = Info(4, albumArt[4], img5.contentDescription.toString(), img5.tag.toString())
+        val savedImage6 = Info(5, albumArt[5], img6.contentDescription.toString(), img6.tag.toString())
+        val savedImage7 = Info(6, albumArt[6], img7.contentDescription.toString(), img7.tag.toString())
+        val savedImage8 = Info(7, albumArt[7], img8.contentDescription.toString(), img8.tag.toString())
+        database.infoDatabaseDao.update(savedImage1)
+        database.infoDatabaseDao.update(savedImage2)
+        database.infoDatabaseDao.update(savedImage3)
+        database.infoDatabaseDao.update(savedImage4)
+        database.infoDatabaseDao.update(savedImage5)
+        database.infoDatabaseDao.update(savedImage6)
+        database.infoDatabaseDao.update(savedImage7)
+        database.infoDatabaseDao.update(savedImage8)
     }
 
     override fun onDestroy() {

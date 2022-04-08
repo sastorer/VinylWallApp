@@ -172,39 +172,42 @@
         android:layout_width="241dp"
         android:layout_height="6dp"
         android:layout_marginStart="85dp"
+        android:layout_marginTop="245dp"
         android:layout_marginEnd="85dp"
         android:adjustViewBounds="true"
         android:background="#754C24"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="@+id/imageView_background"
-        app:layout_constraintTop_toBottomOf="@+id/image_grid2" />
+        app:layout_constraintTop_toTopOf="@+id/imageView_background" />
 
     <ImageView
         android:id="@+id/image_shelf2"
         android:layout_width="241dp"
         android:layout_height="6dp"
         android:layout_marginStart="85dp"
+        android:layout_marginTop="331dp"
         android:layout_marginEnd="85dp"
         android:adjustViewBounds="true"
         android:background="#754C24"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="@+id/imageView_background"
-        app:layout_constraintTop_toBottomOf="@+id/image_grid5" />
+        app:layout_constraintTop_toTopOf="@+id/imageView_background" />
 
     <ImageView
         android:id="@+id/image_shelf3"
         android:layout_width="241dp"
         android:layout_height="6dp"
         android:layout_marginStart="85dp"
+        android:layout_marginTop="415dp"
         android:layout_marginEnd="85dp"
         android:adjustViewBounds="true"
         android:background="#754C24"
         android:scaleType="center"
         app:layout_constraintEnd_toEndOf="@+id/imageView_background"
         app:layout_constraintStart_toStartOf="@+id/imageView_background"
-        app:layout_constraintTop_toBottomOf="@+id/image_grid8" />
+        app:layout_constraintTop_toTopOf="@+id/imageView_background" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/floatingActionButton_grid1"
