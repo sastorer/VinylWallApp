@@ -1,10 +1,15 @@
 package com.example.litvinylwall
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import com.example.litvinylwall.data.Info
 import com.example.litvinylwall.data.InfoDatabase
@@ -13,8 +18,6 @@ import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.random.Random.Default.nextInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -40,6 +43,8 @@ class MainActivity : AppCompatActivity() {
     "spotify:album:3cQO7jp5S9qLBoIVtbkSM1",
     "spotify:album:5OZJflQcQCdZLQjtUudCin"
     )
+    var nfcSound = ""
+    var nfcAlbum = ""
     val blankAlbum = "https://i.imgur.com/V4QpirM.png"
     val albumArt = arrayOf("", "", "", "", "", "", "", "")
     val nfcAlbumArt = arrayOf("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8",
@@ -184,18 +189,20 @@ class MainActivity : AppCompatActivity() {
         val buttonAddAlbum = findViewById<Button>(R.id.button_addAlbum)
         buttonAddAlbum.setOnClickListener {
             Log.i("MainActivity", "Clicked the Add button")
+            startForResult.launch(Intent(this, NFCActivity::class.java))
 
             if (albumCount < 8) {
-                var randVal = nextInt(0,8)
-                Log.i("MainActivity", randVal.toString())
+                //var randVal = nextInt(0,8)
+                //Log.i("MainActivity", randVal.toString())
                 images[albumCount].setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-                Picasso.with(this).load(nfcAlbumArt[randVal]).into(images[albumCount])
+                Picasso.with(this).load(nfcAlbum).into(images[albumCount])
                 images[albumCount].tag = "NotBlank"
-                images[albumCount].contentDescription = sounds[randVal]
-                albumArt[albumCount] = nfcAlbumArt[randVal]
+                images[albumCount].contentDescription = nfcSound
+                albumArt[albumCount] = nfcAlbum
             }
 
             albumCount++
+
         }
 
         img1.setOnLongClickListener {
@@ -442,6 +449,17 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            val intent1 = result.data
+                nfcSound = intent1?.getStringExtra("soundURI").toString()
+                nfcAlbum = intent1?.getStringExtra("imgURL").toString()
+
+        }
+        Log.i("MainActivity", nfcSound)
+        Log.i("MainActivity", nfcAlbum)
+    }
+
     override fun onStart() {
         super.onStart()
         // Set the connection parameters
@@ -538,5 +556,4 @@ class MainActivity : AppCompatActivity() {
             SpotifyAppRemote.disconnect(it)
         }
     }
-
 }
