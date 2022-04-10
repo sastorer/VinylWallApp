@@ -47,29 +47,10 @@ class MainActivity : AppCompatActivity() {
     lateinit var img8 : ImageView
 
     private var adapter: NfcAdapter? = null
-
-    val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL",
-    "spotify:album:4oktVvRuO1In9B7Hz0xm0a",
-    "spotify:album:0cnNCK2xpudXjB8pzsrYy9",
-    "spotify:album:4QjGIZZqvNrdkgw4LZKLZK",
-    "spotify:album:1CJDBCPg27ASz4eWE7oeNz",
-    "spotify:album:0Q5XBpCYFgUWiG9DUWyAmJ",
-    "spotify:album:3cQO7jp5S9qLBoIVtbkSM1",
-    "spotify:album:5OZJflQcQCdZLQjtUudCin"
-    )
     var nfcSound = ""
     var nfcAlbum = ""
     val blankAlbum = "https://i.imgur.com/V4QpirM.png"
     val albumArt = arrayOf("", "", "", "", "", "", "", "")
-    val nfcAlbumArt = arrayOf("https://i.scdn.co/image/ab67616d00001e0269592e88bb29d610a35118f8",
-    "https://i.scdn.co/image/ab67616d00001e0211b3df35e2e46d91f585afd9",
-    "https://i.scdn.co/image/ab67616d00001e024849278ce9876ebea7353d66",
-    "https://i.scdn.co/image/ab67616d00001e02377453abefeab743c5633fcc",
-    "https://i.scdn.co/image/ab67616d00001e027f888564b247d806d838761e",
-    "https://i.scdn.co/image/ab67616d00001e0220b467550945fd123e00f0a5",
-    "https://i.scdn.co/image/ab67616d00001e02de03bfc2991fd5bcfde65ba3",
-    "https://i.scdn.co/image/ab67616d00001e0274fefed78db6d6cf4d963fdc"
-    )
 
     private val clientId = "4adfa19aee5a48e4a7634908838c3292"
     private val redirectUri = "lit-vinyl-wall://callback"
@@ -208,8 +189,6 @@ class MainActivity : AppCompatActivity() {
         val textViewScan = findViewById<TextView>(R.id.textView_scanTag)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout_addAlbum)
         buttonAddAlbum.setOnClickListener {
-            Log.i("MainActivity", "Clicked the Add button")
-
             if (albumCount < 8) {
                 constraintLayout.visibility = View.VISIBLE
                 textViewScan.visibility = View.VISIBLE
@@ -294,7 +273,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         actionButton1.setOnClickListener {
-            Log.i("MainActivity", "Clicked the remove button")
             img1.setImageDrawable(img2.drawable)
             img1.tag = img2.tag
             img1.contentDescription = img2.contentDescription
@@ -536,11 +514,11 @@ class MainActivity : AppCompatActivity() {
         var recordData = ""
 
         for (record in records) {
-            var recordURI = record.toUri()
-            if (recordURI.toString().contains("https")) {
-                nfcAlbum = recordURI.toString()
-            } else if (recordURI.toString().contains("spotify:")) {
-                nfcSound = recordURI.toString()
+            var recordURI = record.toUri().toString()
+            if (recordURI.contains("https")) {
+                nfcAlbum = recordURI
+            } else if (recordURI.contains("spotify:")) {
+                nfcSound = recordURI
             }
             recordData += record.toUri()
         }
@@ -570,8 +548,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun connected() {
-        // Then we will write some more code here.
-        Log.i("MainActivity", "In the connected method")
         spotifyAppRemote?.let { spotify ->
             img1.setOnClickListener {
                 if (img1.tag == "NotBlank") {
