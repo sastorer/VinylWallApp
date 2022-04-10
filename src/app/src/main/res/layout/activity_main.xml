@@ -313,4 +313,57 @@
         app:layout_constraintTop_toTopOf="@+id/imageView_background"
         app:srcCompat="@android:drawable/ic_delete" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayout_addAlbum"
+        android:layout_width="270dp"
+        android:layout_height="254dp"
+        android:layout_marginStart="61dp"
+        android:layout_marginTop="174dp"
+        android:layout_marginEnd="61dp"
+        android:layout_marginBottom="295dp"
+        android:background="#FFFFFF"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.473"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+        <TextView
+            android:id="@+id/textView_scanTag"
+            android:layout_width="235dp"
+            android:layout_height="67dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginTop="58dp"
+            android:layout_marginEnd="18dp"
+            android:layout_marginBottom="129dp"
+            android:text="Scan an appropriately formatted NFC tag!"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="24sp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button_done"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="90dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginEnd="90dp"
+            android:layout_marginBottom="37dp"
+            android:clickable="false"
+            android:text="Done"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

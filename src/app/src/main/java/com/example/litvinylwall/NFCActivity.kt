@@ -47,8 +47,8 @@ class NFCActivity : AppCompatActivity() {
         // Create a generic PendingIntent that will be deliver to this activity. The NFC stack
         // will fill in the intent with the details of the discovered tag before delivering to
         // this activity.
-        nfcPendingIntent = PendingIntent.getActivity(this, 0,
-            Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), FLAG_MUTABLE)
+        //nfcPendingIntent = PendingIntent.getActivity(this, 0,
+            //Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK), FLAG_MUTABLE)
 
         if (intent != null) {
             // Check if the app was started via an NDEF intent
@@ -57,6 +57,7 @@ class NFCActivity : AppCompatActivity() {
         }
     }
 
+    /**
     override fun onResume() {
         super.onResume()
         // Get all NDEF discovered intents
@@ -69,6 +70,7 @@ class NFCActivity : AppCompatActivity() {
         // Disable foreground dispatch, as this activity is no longer in the foreground
         nfcAdapter?.disableForegroundDispatch(this);
     }
+    **/
 
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
@@ -77,13 +79,6 @@ class NFCActivity : AppCompatActivity() {
         // that was discovered
         if (intent != null) {
             processIntent(intent)
-
-            Log.i("Intent", imgURL)
-            Log.i("Intent", soundURI)
-            intent.putExtra("imgURL", imgURL)
-            intent.putExtra("soundURI", soundURI)
-            setResult(Activity.RESULT_OK, intent)
-            finish()
         }
     }
 
@@ -110,6 +105,14 @@ class NFCActivity : AppCompatActivity() {
                 }
                 // Process the messages array.
                 processNdefMessages(messages)
+                Handler().postDelayed({
+                    Log.i("Intent", imgURL)
+                    Log.i("Intent", soundURI)
+                    checkIntent.putExtra("imgURL", imgURL)
+                    checkIntent.putExtra("soundURI", soundURI)
+                    setResult(Activity.RESULT_OK, checkIntent)
+                    finish()
+                }, 3000)
             }
         }
     }

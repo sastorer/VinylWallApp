@@ -1,16 +1,27 @@
 package com.example.litvinylwall
 
 import android.app.Activity
+import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_MUTABLE
+import android.content.Context
 import android.content.Intent
+import android.nfc.NdefMessage
+import android.nfc.NfcAdapter
+import android.nfc.NfcManager
 import android.os.Bundle
 import android.os.Handler
+import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import com.example.litvinylwall.data.Info
 import com.example.litvinylwall.data.InfoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -18,6 +29,7 @@ import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.squareup.picasso.Picasso
+import kotlin.random.Random.Default.nextInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -33,6 +45,8 @@ class MainActivity : AppCompatActivity() {
     lateinit var img6 : ImageView
     lateinit var img7 : ImageView
     lateinit var img8 : ImageView
+
+    private var adapter: NfcAdapter? = null
 
     val sounds = arrayOf("spotify:album:6k3vC8nep1BfqAIJ81L6OL",
     "spotify:album:4oktVvRuO1In9B7Hz0xm0a",
@@ -66,6 +80,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        initNFCAdapter()
+
         if (database.infoDatabaseDao.count() != 0) {
             albumCount = database.infoDatabaseDao.count()
             Log.i("MainActivity", albumCount.toString())
@@ -187,22 +204,37 @@ class MainActivity : AppCompatActivity() {
         val actionButton8 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid8)
 
         val buttonAddAlbum = findViewById<Button>(R.id.button_addAlbum)
+        val buttonDone = findViewById<Button>(R.id.button_done)
+        val textViewScan = findViewById<TextView>(R.id.textView_scanTag)
+        val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout_addAlbum)
         buttonAddAlbum.setOnClickListener {
             Log.i("MainActivity", "Clicked the Add button")
-            startForResult.launch(Intent(this, NFCActivity::class.java))
 
             if (albumCount < 8) {
-                //var randVal = nextInt(0,8)
-                //Log.i("MainActivity", randVal.toString())
-                images[albumCount].setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
+                constraintLayout.visibility = View.VISIBLE
+                textViewScan.visibility = View.VISIBLE
+                buttonDone.visibility = View.VISIBLE
+                buttonDone.isClickable = true
+            }
+        }
+
+        buttonDone.setOnClickListener {
+            if (nfcSound != "" && nfcAlbum != "") {
                 Picasso.with(this).load(nfcAlbum).into(images[albumCount])
                 images[albumCount].tag = "NotBlank"
                 images[albumCount].contentDescription = nfcSound
                 albumArt[albumCount] = nfcAlbum
+
+                nfcSound = ""
+                nfcAlbum = ""
+
+                albumCount++
+
+                constraintLayout.visibility = View.INVISIBLE
+                textViewScan.visibility = View.INVISIBLE
+                buttonDone.visibility = View.INVISIBLE
+                buttonDone.isClickable = false
             }
-
-            albumCount++
-
         }
 
         img1.setOnLongClickListener {
@@ -449,15 +481,69 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    val startForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
-        if (result.resultCode == Activity.RESULT_OK) {
-            val intent1 = result.data
-                nfcSound = intent1?.getStringExtra("soundURI").toString()
-                nfcAlbum = intent1?.getStringExtra("imgURL").toString()
+    private fun initNFCAdapter() {
+        val nfcManager = getSystemService(Context.NFC_SERVICE) as NfcManager
+        adapter = nfcManager.defaultAdapter
+    }
 
+    override fun onResume() {
+        super.onResume()
+        enableNfcForegroundDispatch()
+    }
+
+    private fun enableNfcForegroundDispatch() {
+        try {
+            val intent = Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            val nfcPendingIntent = PendingIntent.getActivity(this, 0, intent, FLAG_MUTABLE)
+            adapter?.enableForegroundDispatch(this, nfcPendingIntent, null, null)
+        } catch (ex: IllegalStateException) {
+            Log.e("MainActivity", "Error enabling NFC foreground dispatch", ex)
         }
-        Log.i("MainActivity", nfcSound)
-        Log.i("MainActivity", nfcAlbum)
+    }
+
+    override fun onPause() {
+        disableNfcForegroundDispatch()
+        super.onPause()
+    }
+
+    private fun disableNfcForegroundDispatch() {
+        try {
+            adapter?.disableForegroundDispatch(this)
+        } catch (ex: IllegalStateException) {
+            Log.e("MainActivity", "Error disabling NFC foreground dispatch", ex)
+        }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
+            val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+            if (rawMsgs != null) {
+                getData(rawMsgs)
+            }
+            Toast.makeText(this@MainActivity, "Tag Scanned", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun getData(rawMsgs: Array<Parcelable>) {
+        val msgs = arrayOfNulls<NdefMessage>(rawMsgs.size)
+        for (i in rawMsgs.indices) {
+            msgs[i] = rawMsgs[i] as NdefMessage
+        }
+
+        val records = msgs[0]!!.records
+
+        var recordData = ""
+
+        for (record in records) {
+            var recordURI = record.toUri()
+            if (recordURI.toString().contains("https")) {
+                nfcAlbum = recordURI.toString()
+            } else if (recordURI.toString().contains("spotify:")) {
+                nfcSound = recordURI.toString()
+            }
+            recordData += record.toUri()
+        }
     }
 
     override fun onStart() {
@@ -540,14 +626,14 @@ class MainActivity : AppCompatActivity() {
         val savedImage6 = Info(5, albumArt[5], img6.contentDescription.toString(), img6.tag.toString())
         val savedImage7 = Info(6, albumArt[6], img7.contentDescription.toString(), img7.tag.toString())
         val savedImage8 = Info(7, albumArt[7], img8.contentDescription.toString(), img8.tag.toString())
-        database.infoDatabaseDao.update(savedImage1)
-        database.infoDatabaseDao.update(savedImage2)
-        database.infoDatabaseDao.update(savedImage3)
-        database.infoDatabaseDao.update(savedImage4)
-        database.infoDatabaseDao.update(savedImage5)
-        database.infoDatabaseDao.update(savedImage6)
-        database.infoDatabaseDao.update(savedImage7)
-        database.infoDatabaseDao.update(savedImage8)
+        database.infoDatabaseDao.insert(savedImage1)
+        database.infoDatabaseDao.insert(savedImage2)
+        database.infoDatabaseDao.insert(savedImage3)
+        database.infoDatabaseDao.insert(savedImage4)
+        database.infoDatabaseDao.insert(savedImage5)
+        database.infoDatabaseDao.insert(savedImage6)
+        database.infoDatabaseDao.insert(savedImage7)
+        database.infoDatabaseDao.insert(savedImage8)
     }
 
     override fun onDestroy() {
