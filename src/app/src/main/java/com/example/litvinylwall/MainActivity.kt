@@ -23,10 +23,13 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.litvinylwall.data.Info
 import com.example.litvinylwall.data.InfoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.hivemq.client.mqtt.datatypes.MqttQos
+import com.hivemq.client.mqtt.mqtt5.Mqtt5Client
 import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.squareup.picasso.Picasso
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -195,6 +198,12 @@ class MainActivity : AppCompatActivity() {
         val actionButton7 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid7)
         val actionButton8 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid8)
         val actionButton9 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid9)
+
+        val settingsButton = findViewById<Button>(R.id.button_settings)
+        settingsButton.setOnClickListener {
+            val frag: BluetoothFragment = BluetoothFragment.newInstance()
+            supportFragmentManager.beginTransaction().add(R.id.bluetoothFragmentContainerView, frag).commit()
+        }
 
         val buttonAddAlbum = findViewById<Button>(R.id.button_addAlbum)
         val buttonDone = findViewById<Button>(R.id.button_done)
@@ -633,51 +642,66 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    val client2 = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("test.mosquitto.org")
+        .buildBlocking()
+
     private fun connected() {
+        client2.connect()
         spotifyAppRemote?.let { spotify ->
             img1.setOnClickListener {
                 if (img1.tag == "NotBlank") {
                     spotify.playerApi.play(img1.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("1".toByteArray()).send()
                 }
             }
             img2.setOnClickListener {
                 if (img2.tag == "NotBlank") {
                     spotify.playerApi.play(img2.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("2".toByteArray()).send()
                 }
             }
             img3.setOnClickListener {
                 if (img3.tag == "NotBlank") {
                     spotify.playerApi.play(img3.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("3".toByteArray()).send()
                 }
             }
             img4.setOnClickListener {
                 if (img4.tag == "NotBlank") {
                     spotify.playerApi.play(img4.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("4".toByteArray()).send()
                 }
             }
             img5.setOnClickListener {
                 if (img5.tag == "NotBlank") {
                     spotify.playerApi.play(img5.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("5".toByteArray()).send()
                 }
             }
             img6.setOnClickListener {
                 if (img6.tag == "NotBlank") {
                     spotify.playerApi.play(img6.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("6".toByteArray()).send()
                 }
             }
             img7.setOnClickListener {
                 if (img7.tag == "NotBlank") {
                     spotify.playerApi.play(img7.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("7".toByteArray()).send()
                 }
             }
             img8.setOnClickListener {
                 if (img8.tag == "NotBlank") {
                     spotify.playerApi.play(img8.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("8".toByteArray()).send()
                 }
             }
             img9.setOnClickListener {
                 if (img9.tag == "NotBlank") {
                     spotify.playerApi.play(img9.contentDescription.toString())
+                    client2.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("9".toByteArray()).send()
                 }
             }
         }

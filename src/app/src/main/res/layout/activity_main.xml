@@ -174,7 +174,6 @@
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
-        android:onClick="addButtonClick"
         app:icon="@android:drawable/ic_input_add"
         app:iconPadding="10dp"
         app:iconTint="#F46236"
@@ -343,6 +342,35 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_delete" />
+
+    <Button
+        android:id="@+id/button_settings"
+        android:layout_width="67dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="328dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="654dp"
+        android:clickable="true"
+        app:icon="@android:drawable/ic_menu_manage"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/bluetoothFragmentContainerView"
+        android:layout_width="207dp"
+        android:layout_height="731dp"
+        android:layout_marginStart="204dp"
+        android:clickable="false"
+        android:elevation="90dp"
+        android:focusable="auto"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout="@layout/fragment_bluetooth" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout_addAlbum"
