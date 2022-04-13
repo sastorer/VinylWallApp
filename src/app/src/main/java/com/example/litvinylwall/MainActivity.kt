@@ -200,17 +200,15 @@ class MainActivity : AppCompatActivity() {
         val buttonDone = findViewById<Button>(R.id.button_done)
         val textViewScan = findViewById<TextView>(R.id.textView_scanTag)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout_addAlbum)
+        val closeButton = findViewById<Button>(R.id.button_close)
         buttonAddAlbum.setOnClickListener {
             if (albumCount < 9) {
                 constraintLayout.visibility = VISIBLE
                 textViewScan.visibility = VISIBLE
                 buttonDone.visibility = VISIBLE
                 buttonDone.isClickable = true
-
-                if (albumCount == 8) {
-                    buttonAddAlbum.visibility = INVISIBLE
-                    buttonAddAlbum.isClickable = false
-                }
+                closeButton.isClickable = true
+                closeButton.visibility = VISIBLE
             }
         }
 
@@ -230,6 +228,14 @@ class MainActivity : AppCompatActivity() {
                 textViewScan.visibility = INVISIBLE
                 buttonDone.visibility = INVISIBLE
                 buttonDone.isClickable = false
+                closeButton.isClickable = false
+                closeButton.visibility = INVISIBLE
+
+                if (albumCount == 9) {
+                    buttonAddAlbum.visibility = INVISIBLE
+                    buttonAddAlbum.isClickable = false
+                }
+
             }
         }
 
@@ -524,6 +530,16 @@ class MainActivity : AppCompatActivity() {
             buttonAddAlbum.visibility = VISIBLE
             buttonAddAlbum.isClickable = true
             albumCount--
+        }
+
+        closeButton.setOnClickListener {
+            constraintLayout.visibility = INVISIBLE
+            textViewScan.visibility = INVISIBLE
+            buttonDone.visibility = INVISIBLE
+            buttonDone.isClickable = false
+            closeButton.visibility = INVISIBLE
+            closeButton.isClickable = false
+
         }
     }
 
