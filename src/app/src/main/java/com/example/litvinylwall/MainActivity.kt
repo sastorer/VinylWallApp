@@ -1,6 +1,5 @@
 package com.example.litvinylwall
 
-import android.app.Activity
 import android.app.PendingIntent
 import android.app.PendingIntent.FLAG_MUTABLE
 import android.content.Context
@@ -8,20 +7,19 @@ import android.content.Intent
 import android.nfc.NdefMessage
 import android.nfc.NfcAdapter
 import android.nfc.NfcManager
+import android.os.Build
 import android.os.Bundle
-import android.os.Handler
 import android.os.Parcelable
 import android.util.Log
-import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior.getTag
 import com.example.litvinylwall.data.Info
 import com.example.litvinylwall.data.InfoDatabase
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -29,7 +27,6 @@ import com.spotify.android.appremote.api.ConnectionParams
 import com.spotify.android.appremote.api.Connector
 import com.spotify.android.appremote.api.SpotifyAppRemote
 import com.squareup.picasso.Picasso
-import kotlin.random.Random.Default.nextInt
 
 
 class MainActivity : AppCompatActivity() {
@@ -37,26 +34,27 @@ class MainActivity : AppCompatActivity() {
 
     val database: InfoDatabase by lazy { InfoDatabase.getInstance(this) }
 
-    lateinit var img1 : ImageView
-    lateinit var img2 : ImageView
-    lateinit var img3 : ImageView
-    lateinit var img4 : ImageView
-    lateinit var img5 : ImageView
-    lateinit var img6 : ImageView
-    lateinit var img7 : ImageView
-    lateinit var img8 : ImageView
+    private lateinit var img1 : ImageView
+    private lateinit var img2 : ImageView
+    private lateinit var img3 : ImageView
+    private lateinit var img4 : ImageView
+    private lateinit var img5 : ImageView
+    private lateinit var img6 : ImageView
+    private lateinit var img7 : ImageView
+    private lateinit var img8 : ImageView
+    private lateinit var img9 : ImageView
 
     private var adapter: NfcAdapter? = null
-    var nfcSound = ""
-    var nfcAlbum = ""
-    val blankAlbum = "https://i.imgur.com/V4QpirM.png"
-    val albumArt = arrayOf("", "", "", "", "", "", "", "")
+    private var nfcSound = ""
+    private var nfcAlbum = ""
+    private val blankAlbum = "https://i.imgur.com/V4QpirM.png"
+    private val albumArt = arrayOf("", "", "", "", "", "", "", "", "")
 
     private val clientId = "4adfa19aee5a48e4a7634908838c3292"
     private val redirectUri = "lit-vinyl-wall://callback"
     private var spotifyAppRemote: SpotifyAppRemote? = null
 
-    var albumCount = 0
+    private var albumCount = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,7 +67,7 @@ class MainActivity : AppCompatActivity() {
             Log.i("MainActivity", albumCount.toString())
         }
 
-        img1 = findViewById<ImageView>(R.id.image_grid1)
+        img1 = findViewById(R.id.image_grid1)
         val img1info =  database.infoDatabaseDao.get(0)
         if (img1info != null && img1info.imgTag != "Blank") {
             Picasso.with(this).load(img1info.imgURL).into(img1)
@@ -82,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             img1.contentDescription = ""
         }
 
-        img2 = findViewById<ImageView>(R.id.image_grid2)
+        img2 = findViewById(R.id.image_grid2)
         val img2info =  database.infoDatabaseDao.get(1)
         if (img2info != null && img2info.imgTag != "Blank") {
             Picasso.with(this).load(img2info.imgURL).into(img2)
@@ -95,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             img2.contentDescription = ""
         }
 
-        img3 = findViewById<ImageView>(R.id.image_grid3)
+        img3 = findViewById(R.id.image_grid3)
         val img3info =  database.infoDatabaseDao.get(2)
         if (img3info != null && img3info.imgTag != "Blank") {
             Picasso.with(this).load(img3info.imgURL).into(img3)
@@ -108,7 +106,7 @@ class MainActivity : AppCompatActivity() {
             img3.contentDescription = ""
         }
 
-        img4 = findViewById<ImageView>(R.id.image_grid4)
+        img4 = findViewById(R.id.image_grid4)
         val img4info =  database.infoDatabaseDao.get(3)
         if (img4info != null && img4info.imgTag != "Blank") {
             Picasso.with(this).load(img4info.imgURL).into(img4)
@@ -121,7 +119,7 @@ class MainActivity : AppCompatActivity() {
             img4.contentDescription = ""
         }
 
-        img5 = findViewById<ImageView>(R.id.image_grid5)
+        img5 = findViewById(R.id.image_grid5)
         val img5info =  database.infoDatabaseDao.get(4)
         if (img5info != null && img5info.imgTag != "Blank") {
             Picasso.with(this).load(img5info.imgURL).into(img5)
@@ -134,7 +132,7 @@ class MainActivity : AppCompatActivity() {
             img5.contentDescription = ""
         }
 
-        img6 = findViewById<ImageView>(R.id.image_grid6)
+        img6 = findViewById(R.id.image_grid6)
         val img6info =  database.infoDatabaseDao.get(5)
         if (img6info != null && img6info.imgTag != "Blank") {
             Picasso.with(this).load(img6info.imgURL).into(img6)
@@ -147,7 +145,7 @@ class MainActivity : AppCompatActivity() {
             img6.contentDescription = ""
         }
 
-        img7 = findViewById<ImageView>(R.id.image_grid7)
+        img7 = findViewById(R.id.image_grid7)
         val img7info =  database.infoDatabaseDao.get(6)
         if (img7info != null && img7info.imgTag != "Blank") {
             Picasso.with(this).load(img7info.imgURL).into(img7)
@@ -160,7 +158,7 @@ class MainActivity : AppCompatActivity() {
             img7.contentDescription = ""
         }
 
-        img8 = findViewById<ImageView>(R.id.image_grid8)
+        img8 = findViewById(R.id.image_grid8)
         val img8info =  database.infoDatabaseDao.get(7)
         if (img8info != null && img8info.imgTag != "Blank") {
             Picasso.with(this).load(img8info.imgURL).into(img8)
@@ -173,7 +171,20 @@ class MainActivity : AppCompatActivity() {
             img8.contentDescription = ""
         }
 
-        val images = arrayOf(img1, img2, img3, img4, img5, img6, img7, img8)
+        img9 = findViewById(R.id.image_grid9)
+        val img9info =  database.infoDatabaseDao.get(8)
+        if (img9info != null && img9info.imgTag != "Blank") {
+            Picasso.with(this).load(img9info.imgURL).into(img9)
+            img9.contentDescription = img9info.soundURI
+            img9.tag = "NotBlank"
+            albumArt[8] = img9info.imgURL
+        } else {
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            img9.contentDescription = ""
+        }
+
+        val images = arrayOf(img1, img2, img3, img4, img5, img6, img7, img8, img9)
 
         val actionButton1 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid1)
         val actionButton2 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid2)
@@ -183,17 +194,23 @@ class MainActivity : AppCompatActivity() {
         val actionButton6 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid6)
         val actionButton7 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid7)
         val actionButton8 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid8)
+        val actionButton9 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid9)
 
         val buttonAddAlbum = findViewById<Button>(R.id.button_addAlbum)
         val buttonDone = findViewById<Button>(R.id.button_done)
         val textViewScan = findViewById<TextView>(R.id.textView_scanTag)
         val constraintLayout = findViewById<ConstraintLayout>(R.id.constraintLayout_addAlbum)
         buttonAddAlbum.setOnClickListener {
-            if (albumCount < 8) {
-                constraintLayout.visibility = View.VISIBLE
-                textViewScan.visibility = View.VISIBLE
-                buttonDone.visibility = View.VISIBLE
+            if (albumCount < 9) {
+                constraintLayout.visibility = VISIBLE
+                textViewScan.visibility = VISIBLE
+                buttonDone.visibility = VISIBLE
                 buttonDone.isClickable = true
+
+                if (albumCount == 8) {
+                    buttonAddAlbum.visibility = INVISIBLE
+                    buttonAddAlbum.isClickable = false
+                }
             }
         }
 
@@ -209,65 +226,72 @@ class MainActivity : AppCompatActivity() {
 
                 albumCount++
 
-                constraintLayout.visibility = View.INVISIBLE
-                textViewScan.visibility = View.INVISIBLE
-                buttonDone.visibility = View.INVISIBLE
+                constraintLayout.visibility = INVISIBLE
+                textViewScan.visibility = INVISIBLE
+                buttonDone.visibility = INVISIBLE
                 buttonDone.isClickable = false
             }
         }
 
         img1.setOnLongClickListener {
             if (img1.tag == "NotBlank") {
-                actionButton1.visibility = View.VISIBLE
+                actionButton1.visibility = VISIBLE
             }
             true
         }
 
         img2.setOnLongClickListener {
             if (img2.tag == "NotBlank") {
-                actionButton2.visibility = View.VISIBLE
+                actionButton2.visibility = VISIBLE
             }
             true
         }
 
         img3.setOnLongClickListener {
             if (img3.tag == "NotBlank") {
-                actionButton3.visibility = View.VISIBLE
+                actionButton3.visibility = VISIBLE
             }
             true
         }
 
         img4.setOnLongClickListener {
             if (img4.tag == "NotBlank") {
-                actionButton4.visibility = View.VISIBLE
+                actionButton4.visibility = VISIBLE
             }
             true
         }
 
         img5.setOnLongClickListener {
             if (img5.tag == "NotBlank") {
-                actionButton5.visibility = View.VISIBLE
+                actionButton5.visibility = VISIBLE
             }
             true
         }
 
         img6.setOnLongClickListener {
             if (img6.tag == "NotBlank") {
-                actionButton6.visibility = View.VISIBLE
+                actionButton6.visibility = VISIBLE
             }
             true
         }
 
         img7.setOnLongClickListener {
             if (img7.tag == "NotBlank") {
-                actionButton7.visibility = View.VISIBLE
+                actionButton7.visibility = VISIBLE
             }
             true
         }
 
         img8.setOnLongClickListener {
             if (img8.tag == "NotBlank") {
-                actionButton8.visibility = View.VISIBLE
+                actionButton8.visibility = VISIBLE
+            }
+            true
+        }
+
+        img9.setOnLongClickListener {
+            if (img9.tag == "NotBlank") {
+                actionButton9.visibility = VISIBLE
             }
             true
         }
@@ -301,11 +325,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton1.visibility = View.INVISIBLE
+            actionButton1.visibility = INVISIBLE
             albumCount--
 
 
@@ -336,11 +364,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton2.visibility = View.INVISIBLE
+            actionButton2.visibility = INVISIBLE
             albumCount--
         }
 
@@ -365,11 +397,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton3.visibility = View.INVISIBLE
+            actionButton3.visibility = INVISIBLE
             albumCount--
         }
 
@@ -390,11 +426,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton4.visibility = View.INVISIBLE
+            actionButton4.visibility = INVISIBLE
             albumCount--
         }
 
@@ -411,11 +451,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton5.visibility = View.INVISIBLE
+            actionButton5.visibility = INVISIBLE
             albumCount--
         }
 
@@ -428,11 +472,15 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton6.visibility = View.INVISIBLE
+            actionButton6.visibility = INVISIBLE
             albumCount--
         }
 
@@ -441,20 +489,40 @@ class MainActivity : AppCompatActivity() {
             img7.tag = img8.tag
             img7.contentDescription = img8.contentDescription
             albumArt[6] = albumArt[7]
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton7.visibility = View.INVISIBLE
+            actionButton7.visibility = INVISIBLE
             albumCount--
         }
 
         actionButton8.setOnClickListener {
-            img8.setImageDrawable(resources.getDrawable(R.drawable.blankalbum))
-            img8.tag = "Blank"
-            albumArt[7] = blankAlbum
+            img8.setImageDrawable(img9.drawable)
+            img8.tag = img9.tag
+            img8.contentDescription = img9.contentDescription
+            albumArt[7] = albumArt[8]
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
 
-            actionButton8.visibility = View.INVISIBLE
+            actionButton8.visibility = INVISIBLE
+            albumCount--
+        }
+
+        actionButton9.setOnClickListener {
+            Picasso.with(this).load(blankAlbum).into(img9)
+            img9.tag = "Blank"
+            albumArt[8] = blankAlbum
+
+            actionButton9.visibility = INVISIBLE
+
+            buttonAddAlbum.visibility = VISIBLE
+            buttonAddAlbum.isClickable = true
             albumCount--
         }
     }
@@ -464,11 +532,13 @@ class MainActivity : AppCompatActivity() {
         adapter = nfcManager.defaultAdapter
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     override fun onResume() {
         super.onResume()
         enableNfcForegroundDispatch()
     }
 
+    @RequiresApi(Build.VERSION_CODES.S)
     private fun enableNfcForegroundDispatch() {
         try {
             val intent = Intent(this, javaClass).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -495,26 +565,26 @@ class MainActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         if (NfcAdapter.ACTION_NDEF_DISCOVERED == intent.action) {
-            val rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
-            if (rawMsgs != null) {
-                getData(rawMsgs)
+            val rawMsg = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES)
+            if (rawMsg != null) {
+                getData(rawMsg)
             }
             Toast.makeText(this@MainActivity, "Tag Scanned", Toast.LENGTH_SHORT).show()
         }
     }
 
-    fun getData(rawMsgs: Array<Parcelable>) {
-        val msgs = arrayOfNulls<NdefMessage>(rawMsgs.size)
-        for (i in rawMsgs.indices) {
-            msgs[i] = rawMsgs[i] as NdefMessage
+    private fun getData(rawMsg: Array<Parcelable>) {
+        val msg = arrayOfNulls<NdefMessage>(rawMsg.size)
+        for (i in rawMsg.indices) {
+            msg[i] = rawMsg[i] as NdefMessage
         }
 
-        val records = msgs[0]!!.records
+        val records = msg[0]!!.records
 
         var recordData = ""
 
         for (record in records) {
-            var recordURI = record.toUri().toString()
+            val recordURI = record.toUri().toString()
             if (recordURI.contains("https")) {
                 nfcAlbum = recordURI
             } else if (recordURI.contains("spotify:")) {
@@ -589,6 +659,11 @@ class MainActivity : AppCompatActivity() {
                     spotify.playerApi.play(img8.contentDescription.toString())
                 }
             }
+            img9.setOnClickListener {
+                if (img9.tag == "NotBlank") {
+                    spotify.playerApi.play(img9.contentDescription.toString())
+                }
+            }
         }
     }
 
@@ -602,6 +677,7 @@ class MainActivity : AppCompatActivity() {
         val savedImage6 = Info(5, albumArt[5], img6.contentDescription.toString(), img6.tag.toString())
         val savedImage7 = Info(6, albumArt[6], img7.contentDescription.toString(), img7.tag.toString())
         val savedImage8 = Info(7, albumArt[7], img8.contentDescription.toString(), img8.tag.toString())
+        val savedImage9 = Info(8, albumArt[8], img9.contentDescription.toString(), img9.tag.toString())
         database.infoDatabaseDao.insert(savedImage1)
         database.infoDatabaseDao.insert(savedImage2)
         database.infoDatabaseDao.insert(savedImage3)
@@ -610,6 +686,7 @@ class MainActivity : AppCompatActivity() {
         database.infoDatabaseDao.insert(savedImage6)
         database.infoDatabaseDao.insert(savedImage7)
         database.infoDatabaseDao.insert(savedImage8)
+        database.infoDatabaseDao.insert(savedImage9)
     }
 
     override fun onDestroy() {

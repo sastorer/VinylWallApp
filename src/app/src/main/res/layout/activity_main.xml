@@ -146,6 +146,22 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/blankalbum" />
 
+    <ImageView
+        android:id="@+id/image_grid9"
+        android:layout_width="56dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="256dp"
+        android:layout_marginTop="359dp"
+        android:layout_marginEnd="99dp"
+        android:adjustViewBounds="true"
+        android:longClickable="true"
+        android:saveEnabled="true"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/imageView_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/blankalbum" />
+
     <Button
         android:id="@+id/button_addAlbum"
         style="@style/Widget.AppCompat.Button.Borderless.Colored"
@@ -311,6 +327,21 @@
         app:fabSize="mini"
         app:layout_constraintStart_toStartOf="@+id/image_grid8"
         app:layout_constraintTop_toTopOf="@+id/imageView_background"
+        app:srcCompat="@android:drawable/ic_delete" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floatingActionButton_grid9"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="276dp"
+        android:layout_marginTop="348dp"
+        android:layout_marginEnd="88dp"
+        android:clickable="true"
+        android:visibility="invisible"
+        app:fabSize="mini"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@android:drawable/ic_delete" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
