@@ -730,9 +730,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         spotifyAppRemote?.let {
             SpotifyAppRemote.disconnect(it)
         }
+        super.onDestroy()
     }
 }

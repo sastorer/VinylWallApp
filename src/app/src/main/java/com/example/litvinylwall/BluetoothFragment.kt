@@ -29,6 +29,11 @@ class BluetoothFragment : Fragment() {
         super.onCreate(savedInstanceState)
     }
 
+    val client = Mqtt5Client.builder()
+        .identifier(UUID.randomUUID().toString())
+        .serverHost("test.mosquitto.org")
+        .buildBlocking()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,7 +42,6 @@ class BluetoothFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_bluetooth, container, false)
         val button1 = view.findViewById<Button>(R.id.button_select1)
-        val button2 = view.findViewById<Button>(R.id.button_select2)
         val closeButtonFrag = view.findViewById<Button>(R.id.button_closeFrag)
 
         closeButtonFrag.setOnClickListener {
@@ -45,22 +49,11 @@ class BluetoothFragment : Fragment() {
             manager.beginTransaction().remove(this).commit()
         }
 
-        val client = Mqtt5Client.builder()
-            .identifier(UUID.randomUUID().toString())
-            .serverHost("test.mosquitto.org")
-            .buildBlocking()
-
         client.connect()
 
         button1.setOnClickListener {
             Log.i("Fragment", "Clicked button 1")
-            client.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("1".toByteArray()).send();
-        }
-
-        button2.setOnClickListener {
-            Log.i("Fragment", "Clicked button 2")
-            client.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("2".toByteArray()).send();
-
+            client.publishWith().topic("which_lights_topic").qos(MqttQos.AT_LEAST_ONCE).payload("c".toByteArray()).send()
         }
 
         return view
@@ -77,5 +70,10 @@ class BluetoothFragment : Fragment() {
         @JvmStatic
         fun newInstance() =
             BluetoothFragment().apply {}
+    }
+
+    override fun onStop() {
+        client.disconnect()
+        super.onStop()
     }
 }
