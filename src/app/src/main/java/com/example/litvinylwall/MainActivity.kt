@@ -199,6 +199,19 @@ class MainActivity : AppCompatActivity() {
         val actionButton8 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid8)
         val actionButton9 = findViewById<FloatingActionButton>(R.id.floatingActionButton_grid9)
 
+        val background = findViewById<ImageView>(R.id.imageView_background)
+        background.setOnClickListener {
+            actionButton1.visibility = INVISIBLE
+            actionButton2.visibility = INVISIBLE
+            actionButton3.visibility = INVISIBLE
+            actionButton4.visibility = INVISIBLE
+            actionButton5.visibility = INVISIBLE
+            actionButton6.visibility = INVISIBLE
+            actionButton7.visibility = INVISIBLE
+            actionButton8.visibility = INVISIBLE
+            actionButton9.visibility = INVISIBLE
+        }
+
         val settingsButton = findViewById<Button>(R.id.button_settings)
         settingsButton.setOnClickListener {
             val frag: BluetoothFragment = BluetoothFragment.newInstance()
